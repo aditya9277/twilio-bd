@@ -19,8 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
-const transcriptFile = "transcript.txt";
-const suggestionsFile = "suggestions.txt";
+const transcriptFile = "/home/site/wwwroot/logs/transcript.txt";
+const suggestionsFile = "/home/site/wwwroot/logs/suggestions.txt";
 let transcriptBuffer = ""; // ✅ Stores accumulated speech
 let geminiTimeout = null; // ✅ Holds the timeout reference
 let callActive=true;

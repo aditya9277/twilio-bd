@@ -6,6 +6,7 @@ dotenv.config();
 
 // ✅ Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const sentimentFile = "/home/site/wwwroot/logs/sentiment.txt";
 
 // ✅ Function to Analyze Sentiment
 export async function analyzeSentiment(transcript) {
@@ -24,7 +25,7 @@ export async function analyzeSentiment(transcript) {
     console.log("💬 Customer Sentiment:", sentiment);
 
     // ✅ Save sentiment to a file for reference
-    fs.appendFileSync("sentiments.txt", `Transcript: ${transcript}\nSentiment: ${sentiment}\n\n`, "utf8");
+    fs.appendFileSync(sentimentFile, `Transcript: ${transcript}\nSentiment: ${sentiment}\n\n`, "utf8");
 
     return sentiment; // ✅ Return sentiment for further use if needed
   } catch (error) {
