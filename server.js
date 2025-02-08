@@ -34,7 +34,8 @@ const wsServer = new WebSocketServer({ server });
 wsServer.on("connection", (ws) => {
   console.log("✅ Twilio Media Stream Connected (Receiving Live Audio)");
   callActive = true; 
-  const googleCreds = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+  const googleCredsPath = "/home/site/wwwroot/googlecreds/circular-truth-450110-n4-971bb24ebd34.json"; 
+  const googleCreds = JSON.parse(fs.readFileSync(googleCredsPath, "utf8"));
   const speechClient = new speech.SpeechClient({
     credentials: googleCreds,
   });
