@@ -21,6 +21,7 @@ const io = new Server(server, { cors: { origin: "*" } });
 
 const transcriptFile = "/home/site/wwwroot/logs/transcript.txt";
 const suggestionsFile = "/home/site/wwwroot/logs/suggestions.txt";
+const PUBLIC_URL = process.env.PUBLIC_DEPLOYED_URL;
 let transcriptBuffer = ""; // ✅ Stores accumulated speech
 let geminiTimeout = null; // ✅ Holds the timeout reference
 let callActive=true;
@@ -141,7 +142,7 @@ app.post("/twiml", (req, res) => {
   const start = twiml.start();
   start.stream({
     name: "LiveAudioStream",
-    url: `${process.env.PUBLIC_DEPLOYED_URL}/twiml`, // ✅ Replace with your WebSocket Server URL
+    url: `wss://${PUBLIC_DEPLOYED_URL.replace('https://', '')}/live-audio`, // ✅ Replace with your WebSocket Server URL
   });
 
   twiml.say("Hello, it's Aditya, your AI assistant. I am now listening to you.");
