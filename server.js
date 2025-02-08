@@ -142,7 +142,7 @@ app.post("/twiml", (req, res) => {
   const start = twiml.start();
   start.stream({
     name: "LiveAudioStream",
-    url: `wss://${PUBLIC_DEPLOYED_URL.replace('https://', '')}/live-audio`, // ✅ Replace with your WebSocket Server URL
+    url: `wss://${PUBLIC_URL.replace('https://', '')}/live-audio`, // ✅ Replace with your WebSocket Server URL
   });
 
   twiml.say("Hello, it's Aditya, your AI assistant. I am now listening to you.");
