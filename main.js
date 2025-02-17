@@ -152,7 +152,7 @@ wsServer.on("connection", (ws) => {
         }
         recognizeStream.end();
         }
-    } catch (error) {
+    } catch (error) { 
       console.error("❌ WebSocket Message Error:", error);
     }
   });
@@ -228,7 +228,6 @@ async function generateAISuggestions(finalTranscript, fileName) {
     if (!finalTranscript) return; // ✅ Skip empty transcripts
 
     console.log("🤖 Sending to Gemini AI:", finalTranscript);
-  
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   
