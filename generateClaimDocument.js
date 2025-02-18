@@ -64,8 +64,8 @@ export async function generateClaimDocument(phoneNumber, storagePath, callDate) 
     doc.font("Helvetica-Bold").fontSize(16).text("Claim Resolution Document", { align: "center" });
     doc.moveDown();
 
-    doc.font("Helvetica").fontSize(12).text(`📞 Customer Phone Number: ${phoneNumber}`);
-    doc.text(`📅 Call Date: ${callDate}`);
+    doc.font("Helvetica").fontSize(12).text(`Customer Phone Number: ${phoneNumber}`);
+    doc.text(`Call Date: ${callDate}`);
     doc.moveDown();
 
     // ✅ **Proper Section Headers**

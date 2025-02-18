@@ -71,7 +71,7 @@ wsServer.on("connection", (ws) => {
     config: {
       encoding: "MULAW", // ✅ Twilio streams audio in MULAW format
       sampleRateHertz: 8000, // ✅ Twilio audio is 8kHz
-      languageCode: "en-IN", // Primary language
+      languageCode: "en-US", // Primary language
       alternativeLanguageCodes: ["hi-IN"], // Add Hindi as an alternative language
     },
     interimResults: true, // ✅ Get live partial results
@@ -107,7 +107,7 @@ wsServer.on("connection", (ws) => {
                 generateAISuggestions(transcriptBuffer.trim(), suggestionsFile); // ✅ Send accumulated transcript
                 transcriptBuffer = ""; // ✅ Clear buffer after sending
             }
-        }, 3000);
+        }, 4000);
         // ⏳ Waits 6 seconds before sending
 
         //sentiment
@@ -117,7 +117,7 @@ wsServer.on("connection", (ws) => {
           if (callActive) {
             const sentiment = await analyzeSentiment(transcriptBuffer.trim());
             console.log("🚀 Sentiment Analysis Result:", sentiment);
-            fs.appendFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");
+            fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");
           }
         }, 3000);
       }
@@ -148,7 +148,7 @@ wsServer.on("connection", (ws) => {
           
             generateAISuggestions(transcriptBuffer.trim(), suggestionsFile);
             analyzeSentiment(transcriptBuffer.trim()).then(sentiment => {
-              fs.appendFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");});
+              fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");});
             transcriptBuffer = "";
         }
         recognizeStream.end();
@@ -178,7 +178,7 @@ wsServer.on("connection", (ws) => {
       
         generateAISuggestions(transcriptBuffer.trim(), suggestionsFile);
         analyzeSentiment(transcriptBuffer.trim()).then(sentiment => {
-          fs.appendFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");});
+          fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");});
           
         transcriptBuffer = "";
     }
