@@ -71,8 +71,8 @@ wsServer.on("connection", (ws) => {
     config: {
       encoding: "MULAW", // ✅ Twilio streams audio in MULAW format
       sampleRateHertz: 8000, // ✅ Twilio audio is 8kHz
-      languageCode: "en-US", // Primary language
-      alternativeLanguageCodes: ["hi-IN"], // Add Hindi as an alternative language
+      languageCode: "en-IN", // Primary language
+      // alternativeLanguageCodes: ["hi-IN"], // Add Hindi as an alternative language
     },
     interimResults: true, // ✅ Get live partial results
   };
