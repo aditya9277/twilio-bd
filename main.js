@@ -281,7 +281,8 @@ app.use("/logs", express.static(STORAGE_PATH));
 // ✅ API to Fetch Specific TXT File Based on Type (transcript, sentiment, etc.)
 app.get("/logs/:type/:phoneNumber", (req, res) => {
   const { type, phoneNumber } = req.params;
-  const filePath = path.join(STORAGE_PATH, `${type}_${phoneNumber}.txt`);
+  const fileExtension = type === "claim_doc" ? ".pdf" : ".txt";
+  const filePath = path.join(STORAGE_PATH, `${type}_${phoneNumber}${fileExtension}`);
 
   // console.log("📂 Fetching file:", filePath);
 
