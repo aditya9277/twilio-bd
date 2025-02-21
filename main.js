@@ -147,7 +147,7 @@ wsServer.on("connection", (ws) => {
             const sentimentFile = `sentiment_${phoneNumber}.txt`;
           
             generateAISuggestions(transcriptBuffer.trim(), suggestionsFile);
-            analyzeSentiment(transcriptBuffer.trim()).then(sentiment => {
+            analyzeSentiment(transcriptBuffer.trim(),phoneNumber).then(sentiment => {
               fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");});
             transcriptBuffer = "";
         }
@@ -163,7 +163,7 @@ wsServer.on("connection", (ws) => {
     const phoneNumber = ws.callData?.phoneNumber || "unknown"; 
     const callDate = new Date().toLocaleString(); // ✅ Get Call Date
     if(wholetranscript.trim()){
-      const sentiment = await analyzeSentiment(wholetranscript.trim());
+      const sentiment = await analyzeSentiment(wholetranscript.trim(),phoneNumber);
       scheduleCallback(phoneNumber, transcriptBuffer.trim(), sentiment);
     } 
 
@@ -177,7 +177,7 @@ wsServer.on("connection", (ws) => {
         const sentimentFile = `sentiment_${phoneNumber}.txt`;
       
         generateAISuggestions(transcriptBuffer.trim(), suggestionsFile);
-        analyzeSentiment(transcriptBuffer.trim()).then(sentiment => {
+        analyzeSentiment(transcriptBuffer.trim(),phoneNumber).then(sentiment => {
           fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");});
           
         transcriptBuffer = "";
@@ -369,7 +369,6 @@ app.get("/logs/escalations/:phoneNumber", (req, res) => {
     res.json([]);
   }
 });
-
 
 // ✅ 5️⃣ Start Backend
 const port = process.env.PORT || 5000;
