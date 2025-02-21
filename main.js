@@ -161,7 +161,7 @@ wsServer.on("connection", (ws) => {
   ws.on("close", async () => {
     console.log("❌ Twilio Media Stream Disconnected");
     const phoneNumber = ws.callData?.phoneNumber || "unknown"; 
-    const callDate = new Date().toLocaleString(); // ✅ Get Call Date
+    const callDate = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });// ✅ Get Call Date
     if(wholetranscript.trim()){
       const sentiment = await analyzeSentiment(wholetranscript.trim(),phoneNumber);
       scheduleCallback(phoneNumber, transcriptBuffer.trim(), sentiment);
