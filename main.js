@@ -355,8 +355,10 @@ app.get("/logs/claim-documents", (req, res) => {
 });
 
 //auto escalation
-app.get("/logs/escalations", (req, res) => {
-  const escalationFile = path.join(STORAGE_PATH, "escalations.txt");
+app.get("/logs/escalations/:phoneNumber", (req, res) => {
+  const { phoneNumber } = req.params;
+  const escalationFile = path.join(STORAGE_PATH, `escalation_${phoneNumber}.txt`);
+
   if (fs.existsSync(escalationFile)) {
     const escalations = fs.readFileSync(escalationFile, "utf8")
       .split("\n")
