@@ -1,11 +1,13 @@
 import fs from "fs";
 import dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import path from "path";
 
 dotenv.config();
 
 // ✅ Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const STORAGE_PATH = process.env.LOGS_PATH;
 const sentimentFile = "/home/site/wwwroot/logs/sentiment.txt";
 
 // ✅ Function to Analyze Sentiment
