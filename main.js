@@ -115,7 +115,7 @@ wsServer.on("connection", (ws) => {
 
         sentimentTimeout = setTimeout(async () => {
           if (callActive) {
-            const sentiment = await analyzeSentiment(transcriptBuffer.trim());
+            const sentiment = await analyzeSentiment(transcriptBuffer.trim(),phoneNumber);
             console.log("🚀 Sentiment Analysis Result:", sentiment);
             fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");
           }
@@ -351,6 +351,20 @@ app.get("/logs/claim-documents", (req, res) => {
   } catch (error) {
     console.error("Error fetching claim documents:", error);
     res.status(500).json({ error: "Failed to fetch claim documents" });
+  }
+});
+
+//auto escalation
+app.get("/logs/escalations", (req, res) => {
+  const escalationFile = path.join(STORAGE_PATH, "escalations.txt");
+  if (fs.existsSync(escalationFile)) {
+    const escalations = fs.readFileSync(escalationFile, "utf8")
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line));
+    res.json(escalations);
+  } else {
+    res.json([]);
   }
 });
 
