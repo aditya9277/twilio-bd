@@ -336,6 +336,23 @@ app.get("/logs/call-history", (req, res) => {
   res.json(summaries);
 });
 
+app.get("/logs/claim-documents", (req, res) => {
+  try {
+    const files = fs.readdirSync(STORAGE_PATH);
+    const claimDocs = files
+      .filter((file) => file.startsWith("claim_doc_") && file.endsWith(".pdf"))
+      .map((file) => ({
+        phoneNumber: file.split("_")[2].replace(".pdf", ""),
+        filePath: `/logs/claim_doc/${file.split("_")[2].replace(".pdf", "")}`,
+      }));
+
+    res.json(claimDocs);
+  } catch (error) {
+    console.error("Error fetching claim documents:", error);
+    res.status(500).json({ error: "Failed to fetch claim documents" });
+  }
+});
+
 
 // ✅ 5️⃣ Start Backend
 const port = process.env.PORT || 5000;
