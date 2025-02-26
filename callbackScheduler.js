@@ -63,9 +63,9 @@ const scheduleCallback = async (phoneNumber, transcript, sentiment) => {
 // ✅ Function to determine callback timing based on priority
 const calculateCallbackTime = (priority) => {
   const now = new Date();
-  if (priority === "High") return new Date(now.getTime() + 10 * 60000); // 10 min
-  if (priority === "Medium") return new Date(now.getTime() + 30 * 60000); // 30 min
-  if (priority === "Low") return new Date(now.getTime() + 60 * 60000); // 30 min
+  if (priority === "High") return new Date(now.getTime() + 2 * 60000); // 10 min
+  if (priority === "Medium") return new Date(now.getTime() + 5 * 60000); // 30 min
+  // if (priority === "Low") return new Date(now.getTime() + 60 * 60000); // 30 min
   return new Date(now.getTime() + 60 * 60000); // 1 hour
 };
 

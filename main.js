@@ -107,7 +107,7 @@ wsServer.on("connection", (ws) => {
                 generateAISuggestions(transcriptBuffer.trim(), suggestionsFile); // ✅ Send accumulated transcript
                 transcriptBuffer = ""; // ✅ Clear buffer after sending
             }
-        }, 4000);
+        }, 2000);
         // ⏳ Waits 6 seconds before sending
 
         //sentiment
@@ -355,18 +355,47 @@ app.get("/logs/claim-documents", (req, res) => {
 });
 
 //auto escalation
-app.get("/logs/escalations/:phoneNumber", (req, res) => {
-  const { phoneNumber } = req.params;
-  const escalationFile = path.join(STORAGE_PATH, `escalation_${phoneNumber}.txt`);
+// app.get("/logs/escalations/:phoneNumber", (req, res) => {
+//   const { phoneNumber } = req.params;
+//   const escalationFile = path.join(STORAGE_PATH, `escalation_${phoneNumber}.txt`);
 
-  if (fs.existsSync(escalationFile)) {
-    const escalations = fs.readFileSync(escalationFile, "utf8")
+//   if (fs.existsSync(escalationFile)) {
+//     const escalations = fs.readFileSync(escalationFile, "utf8")
+//       .split("\n")
+//       .filter(Boolean)
+//       .map((line) => JSON.parse(line));
+//     res.json(escalations);
+//   } else {
+//     res.json([]);
+//   }
+// });
+
+app.get("/logs/escalations/:phoneNumber", async (req, res) => {
+  const { phoneNumber } = req.params;
+  const fileUrl = `https://twilio-ai-backend-gegfdfd9gnf2g9hg.southindia-01.azurewebsites.net/logs/escalation_${phoneNumber}.txt`;
+
+  try {
+    const response = await fetch(fileUrl);
+    if (!response.ok) throw new Error("Failed to fetch file");
+
+    const text = await response.text();
+    const escalations = text
       .split("\n")
       .filter(Boolean)
-      .map((line) => JSON.parse(line));
+      .map((line) => {
+        try {
+          return JSON.parse(line); // ✅ Parse JSON safely
+        } catch (error) {
+          console.error("❌ JSON Parse Error:", line, error);
+          return null; // ✅ Ignore invalid JSON
+        }
+      })
+      .filter(Boolean);
+
     res.json(escalations);
-  } else {
-    res.json([]);
+  } catch (error) {
+    console.error("❌ Error fetching escalation file:", error);
+    res.status(500).json({ error: "Error fetching escalation file" });
   }
 });
 
