@@ -44,18 +44,49 @@ export async function analyzeSentiment(transcript, phoneNumber) {
 }
 
 // ✅ Function to trigger escalation logic
-function triggerEscalation(transcript, sentiment, phoneNumber) {
-  const escalationData = {
-    timestamp: new Date().toISOString(),
-    phoneNumber: phoneNumber,
-    reason: sentiment,
-    transcript: transcript,
-  };
+// function triggerEscalation(transcript, sentiment, phoneNumber) {
+//   const escalationData = {
+//     timestamp: new Date().toISOString(),
+//     phoneNumber: phoneNumber,
+//     reason: sentiment,
+//     transcript: transcript,
+//   };
 
-  // ✅ Store per phone number
-  const escalationFile = path.join(STORAGE_PATH, `escalation_${phoneNumber}.txt`);
+//   // ✅ Store per phone number
+//   const escalationFile = path.join(STORAGE_PATH, `escalation_${phoneNumber}.txt`);
 
-  // ✅ Append to file or create new if doesn't exist
-  fs.appendFileSync(escalationFile, JSON.stringify(escalationData) + "\n", "utf8");
-  console.log(`⚠️ Escalation Logged for ${phoneNumber}`);
+//   // ✅ Append to file or create new if doesn't exist
+//   fs.appendFileSync(escalationFile, JSON.stringify(escalationData) + "\n", "utf8");
+//   console.log(`⚠️ Escalation Logged for ${phoneNumber}`);
+// }
+
+async function triggerEscalation(transcript, sentiment, phoneNumber) {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+  try {
+    // ✅ Ask Gemini to summarize the reason for escalation
+    const aiResponse = await model.generateContent(
+      `Given this customer conversation excerpt:\n"${transcript}"\n\nIdentify a concise reason for escalation (only return the reason, no extra text):`
+    );
+
+    const conciseReason = aiResponse.response.text().trim();
+
+    // ✅ Create escalation entry with Gemini-generated reason
+    const escalationData = {
+      timestamp: new Date().toISOString(),
+      phoneNumber: phoneNumber,
+      reason: conciseReason, // ✅ Use Gemini’s concise reason
+      sentiment: sentiment, // ✅ Keep sentiment for analysis
+    };
+
+    // ✅ Store per phone number
+    const escalationFile = path.join(STORAGE_PATH, `escalation_${phoneNumber}.txt`);
+
+    // ✅ Append to file or create new if doesn't exist
+    fs.appendFileSync(escalationFile, JSON.stringify(escalationData) + "\n", "utf8");
+    console.log(`⚠️ Escalation Logged for ${phoneNumber}: ${conciseReason}`);
+  } catch (error) {
+    console.error("❌ Gemini AI Error:", error);
+  }
 }
