@@ -31,6 +31,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const STORAGE_PATH = process.env.LOGS_PATH || path.join(__dirname, "logs");
 const CALLBACKS_FILE = path.join(STORAGE_PATH, "scheduled_callbacks.json");
+const LIVE_TRANSCRIPT_FILE = path.join(STORAGE_PATH, "live_transcript.txt");
 const activeCalls = {}; 
 let transcriptBuffer = ""; // ✅ Stores accumulated speech
 let geminiTimeout = null; // ✅ Holds the timeout reference
@@ -94,6 +95,7 @@ wsServer.on("connection", (ws) => {
         const sentimentFile = path.join(STORAGE_PATH, `sentiment_${phoneNumber}.txt`);
         // ✅ Save transcript in real-time
         fs.appendFileSync(transcriptFile, transcript + "\n", "utf8");
+        fs.writeFileSync(LIVE_TRANSCRIPT_FILE, transcript, "utf8");
         
         transcriptBuffer += transcript + " ";
         wholetranscript+=transcript + " ";
@@ -160,6 +162,7 @@ wsServer.on("connection", (ws) => {
 
   ws.on("close", async () => {
     console.log("❌ Twilio Media Stream Disconnected");
+    fs.writeFileSync(LIVE_TRANSCRIPT_FILE, "", "utf8"); // ✅ Clear transcript on disconnect
     const phoneNumber = ws.callData?.phoneNumber || "unknown"; 
     const callDate = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });// ✅ Get Call Date
     if(wholetranscript.trim()){
@@ -335,6 +338,22 @@ app.get("/logs/call-history", (req, res) => {
     });
 
   res.json(summaries);
+});
+
+app.get("/logs/live-resolution", async (req, res) => {
+  try {
+    const transcript = fs.readFileSync(Transcrit, "utf8");
+
+    if (!transcript.trim()) {
+      return res.json({ resolution: "Waiting for live call data..." });
+    }
+
+    const resolution = await getResolution(transcript);
+    res.json({ resolution });
+  } catch (error) {
+    console.error("❌ Error fetching live resolution:", error);
+    res.status(500).json({ error: "Could not fetch AI resolution" });
+  }
 });
 
 app.get("/logs/claim-documents", (req, res) => {
