@@ -30,7 +30,7 @@ export async function getResolution(issue) {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const aiResponse = await model.generateContent(
-      `The following issue was encountered during a call:\n"${issue}"\nProvide a professional resolution that an agent should follow:`
+      `The following issue was encountered during a call:\n"${issue}"\nProvide a professional resolution in short crisp 2-3 points, each in new line respectively, that an agent should follow:`
     );
 
     const newResolution = aiResponse.response.text();
