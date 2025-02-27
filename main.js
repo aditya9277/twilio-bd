@@ -342,7 +342,7 @@ app.get("/logs/call-history", (req, res) => {
 
 app.get("/logs/live-resolution", async (req, res) => {
   try {
-    const transcript = fs.readFileSync(Transcrit, "utf8");
+    const transcript = fs.readFileSync(LIVE_TRANSCRIPT_FILE, "utf8");
 
     if (!transcript.trim()) {
       return res.json({ resolution: "Waiting for live call data..." });
