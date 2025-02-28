@@ -217,7 +217,7 @@ app.post("/twiml", (req, res) => {
     url: `wss://${PUBLIC_URL.replace('https://', '')}/live-audio`, // ✅ Replace with your WebSocket Server URL
   });
 
-  twiml.say("Hello, now you are testing our prototype, Please speak and see results on the software");
+  twiml.say("Hello Welcome to Kisan Mitra.Today's weather update: There is a chance of rainfall, so it's advisable not to sow the seeds today to avoid any losses. Also, the current market price of rice is ₹450 per quintal.Stay updated with Kisan Mitra for more agricultural insights. Have a great day!");
   twiml.pause({ length: 180 }); // ✅ Keeps call open for 30 seconds before repeating
 
   // ✅ Repeat the message to keep the conversation open
