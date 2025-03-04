@@ -15,12 +15,12 @@ const STORAGE_PATH = process.env.LOGS_PATH || path.join(__dirname, 'logs');
 const CALLBACKS_FILE = path.join(STORAGE_PATH, 'scheduled_callbacks.json');
 const PUBLIC_URL = process.env.PUBLIC_DEPLOYED_URL;
 
-// ✅ Ensure the file exists
+// Ensure the file exists
 if (!fs.existsSync(CALLBACKS_FILE)) {
   fs.writeFileSync(CALLBACKS_FILE, JSON.stringify([]), "utf8");
 }
 
-// ✅ Function to determine call priority based on transcript & sentiment
+// Function to determine call priority based on transcript & sentiment
 const determinePriority = async (transcript, sentiment) => {
   const response = await model.generateContent(`
     You are an AI assistant helping a claims processing agent. 
@@ -38,7 +38,7 @@ const determinePriority = async (transcript, sentiment) => {
   return response.response.text().trim();
 };
 
-// ✅ Function to schedule a callback
+// Function to schedule a callback
 const scheduleCallback = async (phoneNumber, transcript, sentiment) => {
   const priority = await determinePriority(transcript, sentiment);
   const callbackTime = calculateCallbackTime(priority);
@@ -50,17 +50,17 @@ const scheduleCallback = async (phoneNumber, transcript, sentiment) => {
     status: "scheduled",
   };
 
-  // ✅ Read existing callbacks
+  // Read existing callbacks
   const existingCallbacks = JSON.parse(fs.readFileSync(CALLBACKS_FILE, "utf8"));
   existingCallbacks.push(newCallback);
 
-  // ✅ Save updated callbacks
+  // Save updated callbacks
   fs.writeFileSync(CALLBACKS_FILE, JSON.stringify(existingCallbacks, null, 2), "utf8");
 
   console.log(`📅 Callback scheduled for ${phoneNumber} at ${callbackTime} | Priority: ${priority}`);
 };
 
-// ✅ Function to determine callback timing based on priority
+// Function to determine callback timing based on priority
 const calculateCallbackTime = (priority) => {
   const now = new Date();
   if (priority === "High") return new Date(now.getTime() + 2 * 60000); // 10 min
@@ -69,7 +69,7 @@ const calculateCallbackTime = (priority) => {
   return new Date(now.getTime() + 60 * 60000); // 1 hour
 };
 
-// ✅ Function to check and trigger callbacks
+// Function to check and trigger callbacks
 const checkAndTriggerCallbacks = () => {
   const callbacks = JSON.parse(fs.readFileSync(CALLBACKS_FILE, "utf8"));
   const now = new Date();
@@ -77,7 +77,7 @@ const checkAndTriggerCallbacks = () => {
   callbacks.forEach(async (callback) => {
     if (new Date(callback.callbackTime) <= now && callback.status === "scheduled") {
       console.log(`☎️ Triggering callback for ${callback.phoneNumber}`);
-      // ✅ Mark callback as completed
+      // Mark callback as completed
       callback.status = "completed";
       await twilioClient.calls.create({
         url: `${process.env.PUBLIC_DEPLOYED_URL}/twiml`, // Use a separate TwiML for callbacks
@@ -88,11 +88,11 @@ const checkAndTriggerCallbacks = () => {
     }
   });
 
-  // ✅ Save updated callback statuses
+  // Save updated callback statuses
   fs.writeFileSync(CALLBACKS_FILE, JSON.stringify(callbacks, null, 2), "utf8");
 };
 
-// ✅ Periodically check for callbacks (every minute)
+// Periodically check for callbacks (every minute)
 setInterval(checkAndTriggerCallbacks, 60 * 1000);
 
 export { scheduleCallback };

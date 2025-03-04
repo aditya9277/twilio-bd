@@ -12,17 +12,17 @@ export async function generateClaimDocument(phoneNumber, storagePath, callDate) 
     let transcriptText = "Transcript not available.";
     let agentNotes = "No agent notes provided.";
 
-    // ✅ Read Call Transcript
+    // Read Call Transcript
     if (fs.existsSync(transcriptPath)) {
       transcriptText = fs.readFileSync(transcriptPath, "utf8");
     }
 
-    // ✅ Read Agent Notes (Optional)
+    // Read Agent Notes (Optional)
     if (fs.existsSync(notesPath)) {
       agentNotes = fs.readFileSync(notesPath, "utf8");
     }
 
-    // ✅ 1️⃣ Generate AI-Powered Claim Document
+    // 1️⃣ Generate AI-Powered Claim Document
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY2);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -45,7 +45,7 @@ export async function generateClaimDocument(phoneNumber, storagePath, callDate) 
       **Agent Notes:**  
       ${agentNotes}
 
-      ✅ Ensure clarity, professionalism, and proper business tone. Format it in sections.
+      Ensure clarity, professionalism, and proper business tone. Format it in sections.
       
     `;
 
@@ -54,13 +54,13 @@ export async function generateClaimDocument(phoneNumber, storagePath, callDate) 
 
     console.log("📄 AI-Generated Claim Document:\n", claimContent);
 
-    // ✅ 2️⃣ Generate PDF from AI Claim Document
+    // 2️⃣ Generate PDF from AI Claim Document
     const doc = new PDFDocument({ margin: 50 });
 
     const writeStream = fs.createWriteStream(claimDocPath);
     doc.pipe(writeStream);
 
-    // ✅ **Header: Proper Encoding & Formatting**
+    // **Header: Proper Encoding & Formatting**
     doc.font("Helvetica-Bold").fontSize(16).text("Claim Resolution Document", { align: "center" });
     doc.moveDown();
 
@@ -68,11 +68,11 @@ export async function generateClaimDocument(phoneNumber, storagePath, callDate) 
     doc.text(`Call Date: ${callDate}`);
     doc.moveDown();
 
-    // ✅ **Proper Section Headers**
+    // **Proper Section Headers**
     doc.font("Helvetica-Bold").text("AI-Generated Claim Document", { underline: true });
     doc.moveDown();
 
-    // ✅ **Process AI Content Line-by-Line (For Formatting)**
+    // **Process AI Content Line-by-Line (For Formatting)**
     const lines = claimContent.split("\n");
     lines.forEach((line) => {
       if (line.startsWith("**") && line.endsWith("**")) {

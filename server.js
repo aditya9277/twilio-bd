@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 import twilio from "twilio";
 import cors from "cors";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { analyzeSentiment } from "./sentimentAnalyzer.js"; // ✅ Import Sentiment Analyzer
+import { analyzeSentiment } from "./sentimentAnalyzer.js"; // Import Sentiment Analyzer
 
 
 dotenv.config();
@@ -22,18 +22,18 @@ const io = new Server(server, { cors: { origin: "*" } });
 const transcriptFile = "/home/site/wwwroot/logs/transcript.txt";
 const suggestionsFile = "/home/site/wwwroot/logs/suggestions.txt";
 const PUBLIC_URL = process.env.PUBLIC_DEPLOYED_URL;
-let transcriptBuffer = ""; // ✅ Stores accumulated speech
-let geminiTimeout = null; // ✅ Holds the timeout reference
+let transcriptBuffer = ""; // Stores accumulated speech
+let geminiTimeout = null; // Holds the timeout reference
 let callActive=true;
-let sentimentTimeout = null; // ✅ Timer for delayed sentiment analysis
+let sentimentTimeout = null; // Timer for delayed sentiment analysis
 
 const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
-// ✅ 1️⃣ WebSocket Server for Twilio Live Audio (Using `<Start><Stream>`)
+// 1️⃣ WebSocket Server for Twilio Live Audio (Using `<Start><Stream>`)
 const wsServer = new WebSocketServer({ server });
 
 wsServer.on("connection", (ws) => {
-  console.log("✅ Twilio Media Stream Connected (Receiving Live Audio)");
+  console.log("Twilio Media Stream Connected (Receiving Live Audio)");
   callActive = true; 
   const googleCredsPath = "/home/site/wwwroot/googlecreds/circular-truth-450110-n4-971bb24ebd34.json"; 
   const googleCreds = JSON.parse(fs.readFileSync(googleCredsPath, "utf8"));
@@ -41,14 +41,14 @@ wsServer.on("connection", (ws) => {
     credentials: googleCreds,
   });
 
-  // ✅ Configure Google Speech-to-Text Streaming (Continuous Transcription)
+  // Configure Google Speech-to-Text Streaming (Continuous Transcription)
   const request = {
     config: {
-      encoding: "MULAW", // ✅ Twilio streams audio in MULAW format
-      sampleRateHertz: 8000, // ✅ Twilio audio is 8kHz
+      encoding: "MULAW", // Twilio streams audio in MULAW format
+      sampleRateHertz: 8000, // Twilio audio is 8kHz
       languageCode: "en-US",
     },
-    interimResults: true, // ✅ Get live partial results
+    interimResults: true, // Get live partial results
   };
 
   const recognizeStream = speechClient
@@ -59,19 +59,19 @@ wsServer.on("connection", (ws) => {
         const transcript = data.results[0]?.alternatives[0]?.transcript;
         console.log("🎤 Live Transcript:", transcript);
 
-        // ✅ Save transcript in real-time
+        // Save transcript in real-time
         fs.appendFileSync(transcriptFile, transcript + "\n", "utf8");
         
         transcriptBuffer += transcript + " ";
 
-        // ✅ Reset the timer if new speech comes in
+        // Reset the timer if new speech comes in
         if (geminiTimeout) clearTimeout(geminiTimeout);
 
-        // ✅ Wait 5-7 seconds before sending to Gemini
+        // Wait 5-7 seconds before sending to Gemini
         geminiTimeout = setTimeout(() => {
             if(callActive){
-                generateAISuggestions(transcriptBuffer.trim()); // ✅ Send accumulated transcript
-                transcriptBuffer = ""; // ✅ Clear buffer after sending
+                generateAISuggestions(transcriptBuffer.trim()); // Send accumulated transcript
+                transcriptBuffer = ""; // Clear buffer after sending
             }
         }, 4000);
         // ⏳ Waits 6 seconds before sending
@@ -100,14 +100,14 @@ wsServer.on("connection", (ws) => {
       if (data.event === "stop") {
         console.log("❌ Twilio Call Ended - Stopping Gemini AI Processing");
 
-        // ✅ Stop Gemini AI Processing
-        callActive = false; // ✅ Mark call as inactive
-        if (geminiTimeout) clearTimeout(geminiTimeout); // ✅ Cancel pending AI call
+        // Stop Gemini AI Processing
+        callActive = false; // Mark call as inactive
+        if (geminiTimeout) clearTimeout(geminiTimeout); // Cancel pending AI call
 
-        // ✅ If any transcript is left, send it before stopping
+        // If any transcript is left, send it before stopping
         if (transcriptBuffer.trim()) {
           generateAISuggestions(transcriptBuffer.trim());
-          analyzeSentiment(transcriptBuffer.trim()); // ✅ Get sentiment on final transcript
+          analyzeSentiment(transcriptBuffer.trim()); // Get sentiment on final transcript
           transcriptBuffer = "";
         }
         recognizeStream.end();
@@ -125,40 +125,40 @@ wsServer.on("connection", (ws) => {
 
     if (transcriptBuffer.trim()) {
       generateAISuggestions(transcriptBuffer.trim());
-      analyzeSentiment(transcriptBuffer.trim()); // ✅ Get sentiment on final transcript
+      analyzeSentiment(transcriptBuffer.trim()); // Get sentiment on final transcript
       transcriptBuffer = "";
     }
     recognizeStream.end();
   });
 });
 
-// ✅ 2️⃣ Twilio Webhook to Start Media Streams (Uses `<Start><Stream>`)
+// 2️⃣ Twilio Webhook to Start Media Streams (Uses `<Start><Stream>`)
 app.post("/twiml", (req, res) => {
-  console.log("✅ Twilio Webhook Hit: /twiml");
+  console.log("Twilio Webhook Hit: /twiml");
 
   const twiml = new twilio.twiml.VoiceResponse();
 
-  // ✅ Start Media Stream (Unidirectional)
+  // Start Media Stream (Unidirectional)
   const start = twiml.start();
   start.stream({
     name: "LiveAudioStream",
-    url: `wss://${PUBLIC_URL.replace('https://', '')}/live-audio`, // ✅ Replace with your WebSocket Server URL
+    url: `wss://${PUBLIC_URL.replace('https://', '')}/live-audio`, // Replace with your WebSocket Server URL
   });
 
   twiml.say("Hello, it's Aditya, your AI assistant. I am now listening to you.");
-  twiml.pause({ length: 30 }); // ✅ Keeps call open for 30 seconds before repeating
+  twiml.pause({ length: 30 }); // Keeps call open for 30 seconds before repeating
 
-  // ✅ Repeat the message to keep the conversation open
+  // Repeat the message to keep the conversation open
   // twiml.redirect("/twiml");
-  console.log("✅ TwiML Media Stream Response Sent:", twiml.toString());
+  console.log("TwiML Media Stream Response Sent:", twiml.toString());
 
   res.setHeader("Content-Type", "text/xml");
   res.send(twiml.toString());
 });
 
-// ✅ 3️⃣ Send Real-Time Transcription to Gemini AI
+// 3️⃣ Send Real-Time Transcription to Gemini AI
 async function generateAISuggestions(finalTranscript) {
-    if (!finalTranscript) return; // ✅ Skip empty transcripts
+    if (!finalTranscript) return; // Skip empty transcripts
 
     console.log("🤖 Sending to Gemini AI:", finalTranscript);
   
@@ -176,7 +176,7 @@ async function generateAISuggestions(finalTranscript) {
     }
 }
 
-// ✅ 4️⃣ API to Initiate a Call from Web
+// 4️⃣ API to Initiate a Call from Web
 app.post("/call", async (req, res) => {
   try {
     console.log("Received Call Request:", req.body);
@@ -187,12 +187,12 @@ app.post("/call", async (req, res) => {
     }
 
     const call = await twilioClient.calls.create({
-      url: `${process.env.PUBLIC_DEPLOYED_URL}/twiml`, // ✅ Replace with your Ngrok URL
+      url: `${process.env.PUBLIC_DEPLOYED_URL}/twiml`, // Replace with your Ngrok URL
       to: to,
       from: process.env.TWILIO_PHONE_NUMBER,
     });
 
-    console.log("✅ Call initiated:", call.sid);
+    console.log("Call initiated:", call.sid);
     res.json({ success: true, callSid: call.sid });
   } catch (error) {
     console.error("❌ Twilio Call Error:", error);
@@ -200,5 +200,5 @@ app.post("/call", async (req, res) => {
   }
 });
 const port = process.env.PORT || 4040;
-// ✅ 5️⃣ Start Backend
+// 5️⃣ Start Backend
 server.listen(port, () => console.log("🚀 Server running on port 5000"));

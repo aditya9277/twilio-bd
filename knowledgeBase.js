@@ -7,10 +7,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const STORAGE_PATH = process.env.LOGS_PATH || path.join(__dirname, 'logs');
-const KNOWLEDGE_DB = path.join(STORAGE_PATH, 'knowledge_base.json'); // ✅ Store AI solutions
+const KNOWLEDGE_DB = path.join(STORAGE_PATH, 'knowledge_base.json'); // Store AI solutions
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// ✅ Ensure the knowledge base file exists
+// Ensure the knowledge base file exists
 if (!fs.existsSync(KNOWLEDGE_DB)) {
   fs.writeFileSync(KNOWLEDGE_DB, JSON.stringify([]));
 }
@@ -21,7 +21,7 @@ export async function fetchKnowledgeResponse(query, forceGenerate = false) {
     // Load existing knowledge base data
     const knowledgeBase = JSON.parse(fs.readFileSync(KNOWLEDGE_DB, "utf8"));
 
-    // ✅ Check if an answer already exists
+    // Check if an answer already exists
     const existingAnswer = knowledgeBase.find((entry) =>
       entry.question.toLowerCase().includes(query.toLowerCase())
     );
@@ -55,11 +55,11 @@ export async function fetchKnowledgeResponse(query, forceGenerate = false) {
 
     const solution = aiResponse.response.text();
 
-    // ✅ Store new AI response in database
+    // Store new AI response in database
     knowledgeBase.push({ question: query, answer: solution });
     fs.writeFileSync(KNOWLEDGE_DB, JSON.stringify(knowledgeBase, null, 2));
 
-    console.log("✅ AI Response Stored:", solution);
+    console.log("AI Response Stored:", solution);
     return { source: "AI", answer: solution };
   } catch (error) {
     console.error("❌ Error fetching AI response:", error);
