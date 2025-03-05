@@ -16,6 +16,7 @@ import { scheduleCallback } from "./callbackScheduler.js";
 import { fetchKnowledgeResponse } from "./knowledgeBase.js";
 import { generateCallSummary } from "./generateCallSummary.js";
 import { getResolution } from "./resolutionGenerator.js";
+import { analyzeCustomerBehavior } from "./FraudDetection.js"
 let sentimentTimeout = null; 
 
 dotenv.config();
@@ -183,18 +184,18 @@ wsServer.on("connection", (ws) => {
         generateAISuggestions(transcriptBuffer.trim(), suggestionsFile);
         analyzeSentiment(transcriptBuffer.trim(),phoneNumber).then(sentiment => {
           fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");});
-          
+  
         transcriptBuffer = "";
     }
     recognizeStream.end();
     //testing call summary 
     await generateCallSummary(phoneNumber);
+    //testing my customer history
+    await analyzeCustomerBehavior(phoneNumber);
     //testing pdf generator
     generateClaimDocument(phoneNumber, STORAGE_PATH, callDate).then((pdfPath) => {
       console.log(`📄 Claim Document Generated: ${pdfPath}`);
     });
-    
-
   });
 });
 
