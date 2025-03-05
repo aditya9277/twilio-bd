@@ -122,7 +122,12 @@ export async function analyzeCustomerBehavior(phoneNumber) {
       }
     `);
 
-    const aiGeneratedResponse = JSON.parse(aiResponse.response.text());
+    let rawResponse = aiResponse.response.text();
+
+    //Remove Markdown Formatting (if present)
+    rawResponse = rawResponse.replace(/```json|```/g, "").trim();
+
+    const aiGeneratedResponse = JSON.parse(rawResponse);
 
     console.log(`🚨 AI Fraud Detection Result for ${phoneNumber}:`, aiGeneratedResponse);
 
