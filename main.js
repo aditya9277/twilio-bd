@@ -93,20 +93,22 @@ wsServer.on("connection", (ws) => {
         const phoneNumber = ws.callData ? ws.callData.phoneNumber : "unknown";
         
         //just testing my Ai agent
-        // Check if AI can resolve the issue automatically
-        async function analyzeCustomerBehavior(transcript, phoneNumber) {
-          const { resolution, autoResolved } = await handleAutoResolution(transcript, phoneNumber);
-          if (autoResolved) {
-            console.log(`🤖 AI Auto-Resolved Query for ${phoneNumber}: ${resolution}`);
-  
-            // Send AI-generated response to the customer via text-to-speech (Optional)
-            twiml.say(resolution);
-  
-            return; // ✅ Exit as no agent is needed
+        async function handleResolution(transcript, phoneNumber) {
+          try {
+            // ✅ Check if AI can resolve the issue automatically
+            const { resolution, autoResolved } = await handleAutoResolution(transcript, phoneNumber);
+        
+            if (autoResolved) {
+              console.log("✅ Issue auto-resolved by AI:", resolution);
+            } else {
+              console.log("⚠️ Escalation needed. Suggested Resolution:", resolution);
+            }
+          } catch (error) {
+            console.error("❌ Error handling resolution:", error);
           }
-          console.log(`📞 Forwarding call to an agent.`);
         }        
-
+        // Check if AI can resolve the issue automatically
+        handleResolution(transcript, phoneNumber);
         // Define Call-Specific File Paths
         const transcriptFile = path.join(STORAGE_PATH, `transcript_${phoneNumber}.txt`);
         const suggestionsFile = path.join(STORAGE_PATH, `suggestions_${phoneNumber}.txt`);
