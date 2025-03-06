@@ -85,7 +85,7 @@ wsServer.on("connection", (ws) => {
     .streamingRecognize(request)
     .on("data", (data) => {
       if (data.results[0]?.isFinal) {
-
+        const twiml = new twilio.twiml.VoiceResponse();
         const transcript = data.results[0]?.alternatives[0]?.transcript;
         console.log("🎤 Live Transcript:", transcript);
 
