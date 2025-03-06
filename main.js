@@ -16,7 +16,8 @@ import { scheduleCallback } from "./callbackScheduler.js";
 import { fetchKnowledgeResponse } from "./knowledgeBase.js";
 import { generateCallSummary } from "./generateCallSummary.js";
 import { getResolution } from "./resolutionGenerator.js";
-import { analyzeCustomerBehavior } from "./FraudDetection.js"
+import { analyzeCustomerBehavior } from "./FraudDetection.js";
+import { handleAutoResolution } from "./autoResolutionAI.js";
 let sentimentTimeout = null; 
 
 dotenv.config();
