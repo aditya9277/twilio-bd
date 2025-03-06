@@ -99,9 +99,9 @@ wsServer.on("connection", (ws) => {
             const { resolution, autoResolved } = await handleAutoResolution(transcript, phoneNumber);
         
             if (autoResolved) {
-              console.log("✅ Issue auto-resolved by AI:", resolution);
-            } else {
-              console.log("⚠️ Escalation needed. Suggested Resolution:", resolution);
+              twiml.say(resolution);
+
+              return;
             }
           } catch (error) {
             console.error("❌ Error handling resolution:", error);
