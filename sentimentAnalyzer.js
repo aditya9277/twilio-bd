@@ -19,7 +19,7 @@ export async function analyzeSentiment(transcript, phoneNumber) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   try {
-    const prompt = `Analyze the following call transcript for customer sentiment. 
+    const prompt = `Analyze the following call transcript for customer sentiment.Be very sensitive if someone says legal or something, driectly return angry.
       Classify it as Positive, Neutral, Negative, Frustrated, or Angry. 
       Return only the sentiment:\n\n${transcript}`;
     
