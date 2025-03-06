@@ -17,7 +17,6 @@ import { fetchKnowledgeResponse } from "./knowledgeBase.js";
 import { generateCallSummary } from "./generateCallSummary.js";
 import { getResolution } from "./resolutionGenerator.js";
 import { analyzeCustomerBehavior } from "./FraudDetection.js";
-import { handleAutoResolution } from "./autoResolutionAI.js";
 let sentimentTimeout = null; 
 
 dotenv.config();
@@ -91,24 +90,7 @@ wsServer.on("connection", (ws) => {
 
         //step2 for filewith phown number
         const phoneNumber = ws.callData ? ws.callData.phoneNumber : "unknown";
-        
-        //just testing my Ai agent
-        async function handleResolution(transcript, phoneNumber) {
-          try {
-            // ✅ Check if AI can resolve the issue automatically
-            const { resolution, autoResolved } = await handleAutoResolution(transcript, phoneNumber);
-        
-            if (autoResolved) {
-              twiml.say(resolution);
-
-              return;
-            }
-          } catch (error) {
-            console.error("❌ Error handling resolution:", error);
-          }
-        }        
-        // Check if AI can resolve the issue automatically
-        handleResolution(transcript, phoneNumber);
+  
         // Define Call-Specific File Paths
         const transcriptFile = path.join(STORAGE_PATH, `transcript_${phoneNumber}.txt`);
         const suggestionsFile = path.join(STORAGE_PATH, `suggestions_${phoneNumber}.txt`);
