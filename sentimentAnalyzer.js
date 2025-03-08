@@ -31,10 +31,10 @@ export async function analyzeSentiment(transcript, phoneNumber) {
     // Save sentiment to a file for reference
     fs.appendFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");
 
-    // Trigger escalation if sentiment is critical
-    // if (["Angry", "Frustrated"].includes(sentiment)) {
-    //   triggerEscalation(transcript, sentiment,phoneNumber);
-    // }
+    //Trigger escalation if sentiment is critical
+    if (["Angry", "Frustrated"].includes(sentiment)) {
+      triggerEscalation(transcript, sentiment,phoneNumber);
+    }
 
     return sentiment; // Return sentiment for further use if needed
   } catch (error) {
