@@ -32,7 +32,7 @@ export async function analyzeSentiment(transcript, phoneNumber) {
     fs.appendFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");
 
     //Trigger escalation if sentiment is critical
-    if (["Angry", "Frustrated"].includes(sentiment)) {
+    if (["Angry"].includes(sentiment)) {
       triggerEscalation(transcript, sentiment,phoneNumber);
     }
 
@@ -67,8 +67,7 @@ async function triggerEscalation(transcript, sentiment, phoneNumber) {
   try {
     // Ask Gemini to summarize the reason for escalation
     const aiResponse = await model.generateContent(
-      `Given this customer conversation excerpt:\n"${transcript}"\n\nIdentify a concise reason for escalation (only return the reason, no extra text
-      For example, in our case if you get any word like *legal* , do Identify a concise reason for escalation (only return the reason, no extra text):`
+      `Given this customer conversation excerpt:\n"${transcript}"\n\nFor example, in our case if you get any word like *legal* , Identify a concise reason for escalation (only return the reason, no extra text):`
     );
 
     const conciseReason = aiResponse.response.text().trim();

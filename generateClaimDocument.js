@@ -45,7 +45,7 @@ export async function generateClaimDocument(phoneNumber, storagePath, callDate) 
       **Agent Notes:**  
       ${agentNotes}
 
-      Ensure clarity, professionalism, and proper business tone. Format it in sections.
+      Ensure clarity, professionalism, and proper business tone. Format it in sections.Give it in plain text.
       
     `;
 
@@ -66,10 +66,6 @@ export async function generateClaimDocument(phoneNumber, storagePath, callDate) 
 
     doc.font("Helvetica").fontSize(12).text(`Customer Phone Number: ${phoneNumber}`);
     doc.text(`Call Date: ${callDate}`);
-    doc.moveDown();
-
-    // **Proper Section Headers**
-    doc.font("Helvetica-Bold").text("AI-Generated Claim Document", { underline: true });
     doc.moveDown();
 
     // **Process AI Content Line-by-Line (For Formatting)**
