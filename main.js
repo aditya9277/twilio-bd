@@ -218,8 +218,8 @@ app.post("/twiml", (req, res) => {
     url: `wss://${PUBLIC_URL.replace('https://', '')}/live-audio`, // Replace with your WebSocket Server URL
   });
 
-  twiml.say("Hello, now you are testing our prototype, Please speak and see results on the software");
-  twiml.pause({ length: 180 }); // Keeps call open for 30 seconds before repeating
+  twiml.say("Hello");
+  twiml.pause({ length: 240 }); // Keeps call open for 240 seconds before repeating
 
   // Repeat the message to keep the conversation open
   // twiml.redirect("/twiml");

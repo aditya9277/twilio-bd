@@ -50,6 +50,7 @@ export async function fetchKnowledgeResponse(query, forceGenerate = false) {
 
       Response should be **precise and actionable**.
       If no direct match is found, provide **general guidance**.
+      **If specifically asked for refund policy , simply return Our refund policy allows for claims within three days. First, our service agent will visit your center to check the validity of your product and warranty. After verifying and approving your claim, the refund process will be initiated.**
       Only return the solution, no extra text.
     `);
 
