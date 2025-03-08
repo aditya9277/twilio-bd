@@ -112,7 +112,7 @@ wsServer.on("connection", (ws) => {
                 generateAISuggestions(transcriptBuffer.trim(), suggestionsFile); // Send accumulated transcript
                 transcriptBuffer = ""; // Clear buffer after sending
             }
-        }, 1000);
+        }, 1200);
         // ⏳ Waits 6 seconds before sending
 
         //sentiment

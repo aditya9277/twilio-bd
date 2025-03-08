@@ -6,7 +6,7 @@ import path from "path";
 dotenv.config();
 
 // Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY3);
 const STORAGE_PATH = process.env.LOGS_PATH;
 const sentimentFile = "/home/site/wwwroot/logs/sentiment.txt";
 
@@ -61,7 +61,7 @@ export async function analyzeSentiment(transcript, phoneNumber) {
 // }
 
 async function triggerEscalation(transcript, sentiment, phoneNumber) {
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY3);
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY2);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   try {
