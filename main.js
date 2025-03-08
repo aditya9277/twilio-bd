@@ -120,9 +120,9 @@ wsServer.on("connection", (ws) => {
 
         sentimentTimeout = setTimeout(async () => {
           if (callActive) {
-            const sentiment = await analyzeSentiment(wholetranscript.trim(),phoneNumber);
+            const sentiment = await analyzeSentiment(transcriptBuffer.trim(),phoneNumber);
             console.log("🚀 Sentiment Analysis Result:", sentiment);
-            triggerEscalation(transcript,sentiment, phoneNumber);
+            // triggerEscalation(transcript,sentiment, phoneNumber);
             fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");
           }
         }, 500);

@@ -19,7 +19,7 @@ export async function analyzeSentiment(transcript, phoneNumber) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   try {
-    const prompt = `Analyze the following call transcript for customer sentiment.Be very sensitive if someone says legal or something, driectly return angry.
+    const prompt = `Analyze the following call transcript for customer sentiment.Be very sensitive if someone says *legal or legal action*, directly return *Angry*.
       Classify it as Positive, Neutral, Negative, Frustrated, or Angry. 
       Return only the sentiment:\n\n${transcript}`;
     
@@ -61,13 +61,14 @@ export async function analyzeSentiment(transcript, phoneNumber) {
 // }
 
 async function triggerEscalation(transcript, sentiment, phoneNumber) {
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY3);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   try {
     // Ask Gemini to summarize the reason for escalation
     const aiResponse = await model.generateContent(
-      `Given this customer conversation excerpt:\n"${transcript}"\n\nIdentify a concise reason for escalation (only return the reason, no extra text):`
+      `Given this customer conversation excerpt:\n"${transcript}"\n\nIdentify a concise reason for escalation (only return the reason, no extra text
+      For example, in our case if you get any word like *legal* , do Identify a concise reason for escalation (only return the reason, no extra text):`
     );
 
     const conciseReason = aiResponse.response.text().trim();
