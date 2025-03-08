@@ -17,6 +17,7 @@ import { fetchKnowledgeResponse } from "./knowledgeBase.js";
 import { generateCallSummary } from "./generateCallSummary.js";
 import { getResolution } from "./resolutionGenerator.js";
 import { analyzeCustomerBehavior } from "./FraudDetection.js";
+import { triggerEscalation } from "./triggerEscalation.js";
 let sentimentTimeout = null; 
 
 dotenv.config();
@@ -121,9 +122,10 @@ wsServer.on("connection", (ws) => {
           if (callActive) {
             const sentiment = await analyzeSentiment(wholetranscript.trim(),phoneNumber);
             console.log("🚀 Sentiment Analysis Result:", sentiment);
+            triggerEscalation(transcript,sentiment, phoneNumber);
             fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");
           }
-        }, 1000);
+        }, 500);
       }
     })
     .on("error", (err) => console.error("❌ Speech API Error:", err));
