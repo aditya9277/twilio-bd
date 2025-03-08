@@ -119,11 +119,11 @@ wsServer.on("connection", (ws) => {
 
         sentimentTimeout = setTimeout(async () => {
           if (callActive) {
-            const sentiment = await analyzeSentiment(transcriptBuffer.trim(),phoneNumber);
+            const sentiment = await analyzeSentiment(wholetranscript.trim(),phoneNumber);
             console.log("🚀 Sentiment Analysis Result:", sentiment);
             fs.writeFileSync(sentimentFile, `Sentiment: ${sentiment}\n`, "utf8");
           }
-        }, 3000);
+        }, 1000);
       }
     })
     .on("error", (err) => console.error("❌ Speech API Error:", err));
