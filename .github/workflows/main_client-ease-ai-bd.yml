@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - twilio-ai-backend
+name: Build and deploy Node.js app to Azure Web App - client-ease-ai-bd
 
 on:
   push:
@@ -60,15 +60,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_24F8FAB7BAE5435185E6F53240425399 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C2331D647AD5414CB8CE02DEABB81BCB }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_78410E164F1747D9B4744205A1F89EC4 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E998BF65F09F4A01A0E380EE254F62E1 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_87F44341FB6B4E5C9CC785A6225F1817 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B6BB1711F62942A894D59CFFEDB8B81D }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'twilio-ai-backend'
+          app-name: 'client-ease-ai-bd'
           slot-name: 'Production'
           package: .
           
