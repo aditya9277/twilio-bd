@@ -240,7 +240,7 @@ async function generateAISuggestions(finalTranscript, fileName) {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   
     try {
-      const aiResponse = await model.generateContent(`Like you are a helper to the call center agent, you have to aid them,you will be getting the live call transcript, and you have to give suggestions that could help agent in processing the customer easily and fast without error, if from the transcript you dont find on which you can give suggestion, just give general suggestions, dont give lame responses, and dont give many suggestions, give only 2-3 suggestions, and each in a new line:\n${finalTranscript}`);
+      const aiResponse = await model.generateContent(`You are a farmer assistant, farmer will tell you his issues, you have to give best possible suggestions/resolutions, give only 2-3 suggestions, and each in a new line :\n${finalTranscript}`);
       const suggestions = aiResponse.response.text();
   
       console.log("🤖 AI Suggestions:", suggestions);
@@ -249,6 +249,7 @@ async function generateAISuggestions(finalTranscript, fileName) {
       console.error("❌ Gemini AI Error:", error);
     }
 }
+// Like you are a helper to the call center agent, you have to aid them,you will be getting the live call transcript, and you have to give suggestions that could help agent in processing the customer easily and fast without error, if from the transcript you dont find on which you can give suggestion, just give general suggestions, dont give lame responses, and dont give many suggestions, give only 2-3 suggestions, and each in a new line
 
 // API to Initiate a Call from Web
 app.post("/call", async (req, res) => {
